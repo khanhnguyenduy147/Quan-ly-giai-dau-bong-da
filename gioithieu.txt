@@ -1,0 +1,324 @@
+ĐẠI HỌC BÁCH KHOA HÀ NỘI
+TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+-----    -----
+
+ 
+PROJECT CUỐI KÌ 
+MÔN THỰC HÀNH CƠ SỞ DỮ LIỆU
+
+Đề tài: Xây dựng cơ sở dữ liệu quản lí giải đấu bóng đá
+
+	Nhóm sinh viên thực hiện:
+STT	Họ và tên	MSSV
+1	Mai Thu Hiền	20200203
+2	Nguyễn Duy Khánh	20204992
+3	Nguyễn Hoàng Long	20200364
+
+
+
+Hà Nội, 7/2022
+ 
+I.	Mô tả bài toán
+-	Mục đích: Trong thời đại số hiện nay thì máy tính đã được áp dụng vào nhiều lĩnh vực của đời sống, trong đó có công tác tổ chức quản lý các giải thi đấu bóng đá. Khi tổ chức các giải đấu, một nhu cầu đặt ra là giúp tổ chức và quản lý một cách nhanh chóng và tiện lợi. Do số lượng câu lạc bộ và các cầu thủ với chất lượng chuyên môn cao ngày càng gia tăng. nên việc ra đời của các phần mềm để trợ giúp là cần thiết.Vì vậy, nhóm chúng em chọn đề tài ‘Thiết kế cơ sở dữ liệu quản lý tổ chức giải đấu bóng đá’ nhằm mục đích giúp công việc tổ chức và quản lý trở nên dễ dàng và hiệu quả hơn. 
+
+-	Những người sử dụng:
++ Ban tổ chức: Ban quản lí giải có thể nhập thông tin đội bóng, kết quả, thẻ vàng/đỏ mà cầu thủ nhận được trong trận đấu cũng như những thông tin liên quan tới trận đấu (ví dụ trận đấu tổ chức ở sân nào, trọng tài, số vé,…). 
++ Huấn luyện viên cập nhập danh sách cầu thủ có thể ra sân trong trận tiếp theo (ví dụ nếu cầu thủ nhận thẻ đỏ sẽ không được ra sân tiếp)
++ Khán giả có thể xem lịch thi đấu, bảng xếp hạng, thành viên từng đội bóng, đội hình ra sân,… cũng như mua vé và tra cứu giá vé, vị trí chỗ ngồi,…
+
+-	Ứng dụng mong muốn có
++ Tự cập nhật số thẻ khi cầu thủ nhận thẻ vàng/đỏ
++ Cập nhật thông tin bàn thắng của cầu thủ
++ Không cho khách hàng mua vé khi full vé ở 1 khán đài
++ HLV chỉ được chọn đội hình ra sân những người không bị cấm thi đấu, đội hình chỉ có 11 người
+
+-	Các quy tắc
+•	Giải đấu có nhiều vòng đấu khác nhau. Mỗi vòng có tên vòng đấu để xác định vòng đấu đó (group stage, semi final)
+•	Mỗi vòng đấu có nhiều trận đấu. Mỗi trận đấu có mã trận đấu để xác định trận đấu đó
+•	Mỗi trận đấu lại có các đội bóng. Mỗi đội bóng có một mã đội duy nhất để xác định đội đó và trong đội bóng sẽ có: tên đội, huấn luyện viên, các thành viên tham gia và có một đội trưởng.
+•	Mỗi đội bóng thì có các thành viên.: Mỗi thành viên trong đội có một mã thành viên duy nhất để xác định thành viên đó và có các thông tin: tên TV, ngày sinh,…
+•	Mỗi trận đấu HLV sẽ được lựa chọn cầu thủ để ra thi đấu. Yêu cầu số cầu thủ bằng 11 và cầu thủ không được để bị cấm thi đấu (cấm thi đấu khi cầu thủ nhận 1 thẻ đỏ hoặc 2 thẻ vàng trong trận đấu gần nhất)
+•	Mỗi sân bóng có mã sân bóng để xác định sân bóng đó và các thông tin: tên sân bóng, thành phố. Trong sân bóng có nhiều khán đài để khách hàng có thể lựa chọn mua vé 
+•	Mỗi khán đài có mã khán đài để xác định khán đài đó thuộc sân nào, mỗi khán đài có 1 sức chứa khác nhau và giá thành cũng khác nhau.
+•	Cách thức tính điểm: thắng 3, hòa 1 và thua 0
+•	Cách thức xếp hạng:Điểm số các đội (theo thứ tự từ cao đến thấp)
+Nếu có 2 hoặc nhiều đội bằng điểm nhau thì xếp theo thứ tự sau:
+ Hiệu số bàn thắng bàn thua
+ Tổng số bàn thắng, bàn thua
+ Số trận, thẻ vàng, thẻ đỏ
+
+II.	Các thực thể
+1.	Đội bóng (Team)
+STT	Tên thuộc tính	Giải thích
+1	TeamID	Mã đội, mỗi đội chỉ có 1 mã (khóa chính)
+2	TeamName	Tên đội
+3	CaptainID	Mã đội trưởng (khóa ngoài tham chiếu đến MemberID bảng Member)
+4	CoachID	Mã HLV (khóa ngoài tham chiếu đến bảng Coach)
+5	GroupTeam	Bảng thi đấu
+
+2.	Huấn luyện Viên (coach)
+STT	Tên thuộc tính	Giải thích
+1	CoachID	Mã HLV
+2	CoachName	Tên HLV
+3	DOB	Ngày sinh
+4	Country	Quê quán
+
+3.	Cầu thủ (Member)
+STT	Tên thuộc tính	Giải thích
+1	MemberID	Mã cầu thủ, khóa chính
+2	TeamID	Mã đội, khóa ngoài tham chiếu đến TeamID bảng Team
+3	MemberName	Tên cầu thủ
+4	DOB	Ngày sinh
+5	YellowCard	Số thẻ vàng trong trận đấu gần nhất (2 = cấm thi)
+6	RedCard	Số thẻ đỏ trong trận đấu gần nhất (1 = cấm thi)
+7	TotalGoal	Tổng số bàn thắng
+
+4.	Thẻ vàng/đỏ (card)
+STT	Tên thuộc tính	Giải thích
+1	MemberID	Mã cầu thủ, khóa ngoài tham chiếu tới MemberID bảng Member
+2	MatchID	Mã trận đấu, khóa ngoài tham chiếu tới MatchID bảng Match
+3	Type	Loại thẻ (vàng/đỏ)
+4	Time	Thời gian nhận
+
+5.	Bàn thắng (Goal)
+STT	Tên thuộc tính	Giải thích
+1	GoalID	Mã bàn thắng, khóa chính
+2	MatchID	Mã trận đấu, khóa ngoài tham chiếu đến MatchID bảng Match
+3	MemberID	Mã cầu thủ, khóa ngoài tham chiếu đến MemberID bảng Member
+4	Time	Thời gian ghi bàn
+
+6.	Vé (Ticket)
+STT	Tên thuộc tính	Giải thích
+1	TicketID	Mã vé, khóa chính, mỗi người sẽ có 1 vé khác nhau
+2	StandID	Mã khán đài, khóa ngoài tham chiếu đến StandID bảng Stand
+3	CustomerID	Mã khách hàng, khóa ngoài tham chiếu đến CustomerID bảng Customer
+4	MatchID	Mã trận đấu, khóa ngoài tham chiếu đến MatchID bảng Match
+
+7.	Khán đài (stand)
+STT	Tên thuộc tính	Giải thích
+1	StandID	Mã khán đài, khóa chính
+2	Amount	Sức chứa
+3	Price	Giá tiền
+4	StadiumID	Mã sân, khóa ngoài tham chiếu tới StadiumID bảng Stadium
+
+8.	Sân vận động (Stadium)
+STT	Tên thuộc tính	Giải thích
+1	StadiumID	Mã sân, khóa chính
+2	StadiumName	Tên sân
+3	Address	Địa chỉ
+
+9.	Khách Hàng (customer)
+STT	Tên thuộc tính	Giải thích
+1	CustomerID	Mã khách hàng, khóa chính, mỗi khách hàng có 1 mã
+2	CustomerName	Tên khách hàng
+3	DOB	Ngày sinh
+
+10.	 Trận đấu (Match)
+STT	Tên thuộc tính	Giải thích
+1	MatchID	Mã trận đấu, khóa chính
+2	Time	Thời gian diễn ra trận đấu
+3	StadiumID	Sân vận động diễn ra trận đấu
+4	Round	Vòng
+
+11.	 2 đội gặp nhau trong trận (Match_team)
+STT	Tên thuộc tính	Giải thích
+1	MatchID	Mã trận đấu, khóa ngoài tham chiếu tới bảng Match
+2	TeamID_1	Đội 1, khóa ngoài tham chiếu tới TeamID bảng Team
+3	TeamID_2	Đội 2, khóa ngoài tham chiếu tới TeamID bảng Team
+4	Score_team_1	Số bàn thắng đội 1 ghi
+5	Score_team_2	Số bàn thắng đội 2 ghi
+6	Teamwinid	Mã đội chiến thắng
+
+12.	 Đội hình ra sân (Match_squad)
+STT	Tên thuộc tính	Giải thích
+1	MatchID	Mã trận đấu, khóa ngoài tham chiếu tới bảng Match
+2	MemberID	Mã cầu thủ - những cầu thủ được ra sân, khóa ngoài tham chiếu tới MemberID bảng Member
+3	Position	Vị trí ra sân của cầu thủ
+
+13.	 Trọng tài bắt trận đấu (Referee_match)
+STT	Tên thuộc tính	Giải thích
+1	MatchID	Mã trận đấu, khóa ngoài tham chiếu tới bảng Match
+2	RefereeID	Mã trọng tài, khóa ngoài tham chiếu tới bảng Referee
+
+14.	Trọng tài (referee)
+STT	Tên thuộc tính	Giải thích
+1	RefereeID	Mã trọng tài, khóa chính
+2	RefereeName	Tên trọng tài
+3	DOB	Ngày sinh
+4	Country	Quê quán
+
+
+
+III.	Mô hình thực thể liên kết
+
+ 
+https://drive.google.com/file/d/1vtaGpLq1TVb_g--Ft3qb_35yxq8mnQN9/view
+IV.	Mô hình quan hệ
+1.	Team(TeamID, TeamName, CaptainID, CoachID, Groupteam)
+2.	Coach(CoachID, CoachName, DOB, Country)
+3.	Member(MemberID, TeamID, MemberName, DOB, Yellow Card, Red Card, TotalGoal)
+4.	Card(MemberID, MatchID, Type, Time)
+5.	Goal(GoalID, MatchID, MemberID, Time)
+6.	Ticket(TicketID, StandID, CustomerID, MatchID)
+7.	Stand(StandID, Amount, Price, StadiumID)
+8.	Stadium(StadiumID, StadiumName, Address)
+9.	Customer(CustomerID, CustomerName, DOB)
+10.	Match(MatchID, Time, StadiumID, Round) 
+11.	Match_team(MatchID, TeamID_1, TeamID_2, ScoreTeam_1, ScoreTeam_2, WinTeamID)   (2 đội gặp nhau trong trận)
+12.	Match_squad(MatchID, MemberID, Position)    (Đội hình ra sân)
+13.	Referee_match(MatchID, RefereeID)
+14.	Referee(RefereeID, RefereeName, DOB, Country)
+V.	Các câu lệnh truy vấn
+1.	Mai Thu Hiền
+--Hiền 20200203
+--1.Đưa ra tên các cầu thủ thuộc đội Đức
+select membername from member where teamid = 'GER';
+--2.Đưa ra tên cầu thủ nhỏ hơn 22 tuổi 
+select membername from member 
+where date_part('year', current_date) - date_part('year', dob) < 22;
+--3.Đưa ra các cầu thủ đã bị cấm thi đấu (2 thẻ vàng/1 thẻ đỏ) 
+select * from member
+where yellowcard >=2 or redcard >= 1;
+--4.Độ tuổi trung bình của các đội bóng 
+select teamid, avg(date_part('year', current_date) - date_part('year', dob)) as do_tuoi_trung_binh 
+from member
+group by (teamid);
+--5.Danh sách các hậu vệ có 3 bàn thắng trở lên
+select * from match_squad ms, member m
+where m.memberid = ms.memberid and position = 'Defender'
+and totalgoal > 3;
+--6.Cầu thủ trẻ (dưới 23 tuổi) ghi nhiều bàn thắng nhất 
+select * from member 
+where date_part('year', current_date) - date_part('year', dob) < 23
+and totalgoal = (select max(totalgoal) from member 
+				 where date_part('year', current_date) - date_part('year', dob) < 23);
+				 
+--7.	Đưa ra giá vé đắt nhất ở sân nào, khán đài nào
+select  stadiumname, standid, price from stadium, stand
+where stadium.stadiumid = stand.stadiumid
+and price = (select max(price) from stand);
+
+-- 8. Đưa ra cầu thủ có nhiều bàn thắng nhất
+select * from member 
+where totalgoal = (select max(totalgoal) from member );
+
+--9.	Danh sách số bàn thắng của các đội 
+select teamid, sum(totalgoal) as so_ban_thang from member
+group by (teamid);
+
+--10. Tra cứu vé của khách hàng có tên Mai Thu Hiền 
+select * from ticket t, customer c
+where t.customerid = c.customerid
+and customername = 'Mai Thu Hiền';
+2.	Nguyễn Duy Khánh
+--Nguyen Duy Khanh
+--MSSV 20204992
+--Danh sach cac tran dau dien ra luc 2h
+select * from match
+where (EXTRACT(HOUR FROM time) = '02') and (EXTRACT(MINUTE FROM time) = '00');
+
+--Tong so tien ve thu duoc cua tung tran dau
+select match.matchid, sum(price)
+from match join ticket on match.matchid = ticket.matchid
+	join stand on stand.standid=ticket.standid
+group by match.matchid;
+
+--Danh sach so ban thang cua tung cau thu
+select memberid, membername, totalgoal as "So ban thang"
+from member
+order by totalgoal desc;
+
+--Ket qua cac tran dau cua Qatar
+select * 
+from match_team
+where teamid_1 = (select teamid from team where lower(teamname) = 'qatar') or
+teamid_2 = (select teamid from team where lower(teamname) = 'qatar');
+
+--Dua ra tran dau co trong tai "Alexandre Boucaut"
+select *
+from match join referee_match on match.matchid=referee_match.matchid
+join referee on referee_match.refereeid=referee.refereeid
+where refereename='Alexandre Boucaut';
+
+--dua ra tran dau dien ra vao ngay 2022-12-03
+select match.matchid, (select teamname from team where teamid=match_team.teamid_1) as "Doi Bong 1", (select teamname from team where teamid=match_team.teamid_2) as "Doi Bong 2"
+from match join match_team on match.matchid=match_team.matchid
+where (EXTRACT(YEAR FROM match.time) = '2022') and (EXTRACT(MONTH FROM match.time) = '12') and (EXTRACT(DAY FROM match.time) = '03');
+
+--Dua ra san bong o Doha, Qatar
+select * from stadium
+where address='Doha, Qatar';
+
+--Dua ra doi co ban thang cao nhat
+select teamid, sum(scoreteam)
+from ((select teamid_1 as teamid, scoreteam_1 as scoreteam
+from match_team)
+union
+(select teamid_2 as teamid, scoreteam_2 as scoreteam
+from match_team)) as bang2
+group by (teamid)
+order by (sum)
+limit 1
+;
+--Dua ra danh sach cau thu sinh nam 1997
+select * from member
+where EXTRACT(year FROM dob) = '1997';
+--Dem so the do 1 doi cua tran vua roi
+select teamid,sum(redcard)
+from member
+group by teamid;
+3.	Nguyễn Hoàng Long
+--Đưa ra thông tin cầu thủ có vị trí là thủ môn 
+select * from member, match_squad
+where member.memberID = match_squad.memberID and position = 'Goalkeeper'
+--Trận đấu có nhiều bàn thắng nhất 
+--Danh sách các sân vận động có sức chứa từ 40000 trở lên
+select stadium.stadiumid, stadiumname, sum(amount)
+from stand, stadium
+where stand.stadiumid = stadium.stadiumid
+group by (stadium.stadiumid)
+having sum(amount) >= 40000;
+--Danh sách các cầu thủ có sinh nhật vào tháng 5
+select * from member
+where date_part ('month', dob) = '5'
+--Hiển thị lịch thi đấu ở sân abc 
+select MatchID, Time, Round, StadiumName from Stadium, Match
+where Stadium.StadiumID = Match.StadiumID and StadiumName = 'abc'
+--Số lượng khán giả trung bình tới xem các trận đấu 
+select avg(count) as "So khan gia trung binh"
+from (select  ticket.matchid, count(ticketid)
+from ticket, match
+where ticket.matchid=match.matchid
+group by ticket.matchid) as bang1;
+--Đội bóng nhận nhiều thẻ vàng nhất 
+select teamid, sum(yellowcard) as so_the_vang from member
+group by (teamid)
+order by sum(yellowcard) desc
+limit 1;
+--
+select RefereeName from Referee
+where Country = 'Argentina' 
+--Đưa ra mã thành viên và tên thành viên có số áo 7 
+select MemberID, MemberName from Member
+where MemberID likes '%07'
+--Xếp đội theo số bàn thắng 
+select TeamName, sum (TotalGoal) as number_of_goals from Team, Member
+where Team.TeamID = Member.MemberID
+group by Team.TeamID
+VI.	Đánh giá quá trình
+-	Phân công công việc
+STT	Công việc	Thành viên
+1	Insert data	Hiền, Khánh, Long
+2	Viết báo cáo	Hiền
+3	Làm slide	Long
+4	Trigger	Khánh
+5	Mô hình quan hệ, xác định các quy tắc 	Hiền
+6	Mô hình thực thể liên kết	Khánh
+7	Lên ý tưởng các câu lệnh truy vấn	Hiền, Long
+8	Các câu lệnh truy vấn	Hiền, Khánh, Long
+
+-	Đánh giá quá trình làm bài tập lớn: 
+Bài tập lớn là một dịp để chúng em có thể hệ thống lại kiến thức đã được học ở môn Cơ sở dữ liệu, giúp chúng em làm quen với công việc của một người quản lý hệ thống trong tương lai. Đồng thời còn giúp chúng em liên hệ giữa kiến thức lý thuyết để áp dụng vào thực tế. 
+Vì đây là lần đầu bọn em tiếp xúc tới vấn đề rộng như thế này, kiến thức của còn nhiều hạn chế, nên bài làm của bọn em chắc chắn không được sát với kinh nghiệm thực tế, chưa tận dụng hết những gì đã học về PostgreSQL, nội dung của bài tập cũng chưa thật sự sâu sắc và không tránh khỏi những sai sót và hạn chế nhất định nhưng chứng em hứa sẽ hoàn thiện bài tập lớn dần theo thời gian. 
+Chúng em xin chân thành cảm ơn cô Nguyễn Thị Oanh đã tận tình giảng dạy cho chúng em để chúng em tiếp nhận được thật nhiều kiến thức từ môn học này.
+
